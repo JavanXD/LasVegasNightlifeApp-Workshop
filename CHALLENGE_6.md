@@ -45,17 +45,11 @@ app.use((req, res, next) => {
 
 Trigger violations to see reporting in action:
 
-```bash
-# Test XSS attempt
-curl -X POST -H "Content-Type: application/json" \
-  -d '{"name":"<script>alert(\"XSS\")</script>","order":"High Rollers Poker"}' \
-  http://localhost:3000/api/order
-
-# Test external script violation
-curl -X POST -H "Content-Type: application/json" \
-  -d '{"csp-report":{"document-uri":"http://localhost:3000/","violated-directive":"script-src","blocked-uri":"http://evil.com/script.js","source-file":"http://localhost:3000/"}}' \
-  http://localhost:3000/csp-report
-```
+1. Remove the `unsafe-inline` directive from `script-src` temporarily.
+2. Trigger an XSS violation by injecting an image with an `onerror` handler:
+    ```html
+    Name<img src="#" onerror="console.log('XSS triggered via onerror'); document.body.style.backgroundColor = 'orange';" alt="XSS1">
+    ```
 
 ### 3. Monitor Dashboard
 
@@ -83,31 +77,6 @@ Visit `http://localhost:3000/csp-dashboard` to see:
 - Legitimate CDNs (`cdn.jsdelivr.net`, `unpkg.com`)
 - Analytics services (`google-analytics.com`)
 
-## Advanced Ideas to Improve the CSP Dashboard
-
-### 1. Distinguish Browser Extensions
-
-Implement logic to identify and filter browser extension violations:
-
-```javascript
-const isBrowserExtension = (blockedURI) => {
-    return blockedURI.includes('chrome-extension') || 
-           blockedURI.includes('moz-extension') ||
-           blockedURI.includes('safari-extension');
-};
-```
-
-### 2. Alert Thresholds
-
-Set up automated alerts for suspicious activity:
-
-```javascript
-const suspiciousPatterns = [
-    { pattern: /eval\(/, severity: 'high' },
-    { pattern: /javascript:/, severity: 'high' },
-    { pattern: /chrome-extension/, severity: 'low' }
-];
-```
 
 ## CSP Report Tampering & Evasion
 
@@ -117,17 +86,11 @@ CSP reporting can be easily tampered with or bypassed by attackers.
 
 ### 1. Report Tampering Examples
 
-Attackers can modify CSP reports to hide their tracks:
+Be aware, that attackers can modify CSP reports to hide their tracks or flood your CSP report receiver service:
 
 ```bash
 # Normal CSP violation report
 curl -X POST -H "Content-Type: application/json" \
-  -d '{"csp-report":{"document-uri":"http://localhost:3000/","violated-directive":"script-src","blocked-uri":"http://evil.com/script.js","source-file":"http://localhost:3000/"}}' \
-  http://localhost:3000/csp-report
-
-# Tampered report - modified IP address
-curl -X POST -H "Content-Type: application/json" \
-  -H "X-Forwarded-For: 192.168.1.100" \
   -d '{"csp-report":{"document-uri":"http://localhost:3000/","violated-directive":"script-src","blocked-uri":"http://evil.com/script.js","source-file":"http://localhost:3000/"}}' \
   http://localhost:3000/csp-report
 
@@ -138,15 +101,26 @@ curl -X POST -H "Content-Type: application/json" \
   http://localhost:3000/csp-report
 ```
 
-### 2. Browser Evasion Techniques
+### 2. Browser Evasion Techniques 
 
 Attackers can disable CSP reporting entirely:
 
-- **Browser Extensions**: "CSP Evaluator", "CSP Disabler", "NoScript"
+- **Browser Extensions**: "CSP Evaluator", "CSP Disabler", "NoScript", "uBlock Origin" with "Disable CSP Reports" setting.  
 - **Developer Tools**: Disable CSP in browser settings
 - **Custom User Agents**: Modify browser to ignore CSP headers
 - **Proxy Interception**: Strip CSP headers before reaching browser
-- **Custom Browsers**: Use browsers that don't enforce CSP
+
+### 3. Filter Browser Extension Violations
+
+As an example, you could implement logic to identify and filter browser extension violations, to reduce noise: 
+
+```javascript
+const isBrowserExtension = (blockedURI) => {
+    return blockedURI.includes('chrome-extension') || 
+           blockedURI.includes('moz-extension') ||
+           blockedURI.includes('safari-extension');
+};
+```
 
 ## Key Takeaways
 
@@ -158,7 +132,7 @@ Attackers can disable CSP reporting entirely:
 
 ## Testing Your Implementation
 
-1. Start the application: `npm start`
+1. After adding the `report-to` directive to your CSP and making the changes in the code, restart the application: `npm start`
 2. Visit the main app: `http://localhost:3000`
 3. Visit the CSP dashboard: `http://localhost:3000/csp-dashboard`
 4. Trigger violations (e.g. using the XSS payload from previous challenges)

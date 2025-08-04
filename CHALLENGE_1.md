@@ -1,4 +1,4 @@
-# Challenge 1: Perform a CSRF attack and then implement protections against it
+# Challenge 1: Perform a CSRF attack and then implement protections against it using `Sec-Fetch-*` headers
 
 ## Objective
 Implement a server-side check to prevent CSRF attacks using the `Sec-Fetch-Site` header.

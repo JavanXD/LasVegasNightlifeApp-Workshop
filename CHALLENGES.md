@@ -6,7 +6,7 @@
 
 ## Challenges
 
-- [Challenge 1](./CHALLENGE_1.md): Perform a **CSRF** attack and then implement protections against it
+- [Challenge 1](./CHALLENGE_1.md): Perform a **CSRF** attack and then implement protections against it using `Sec-Fetch-*` headers
 - [Challenge 2](./CHALLENGE_2.md): Starting with an Insecure **CSP** and Migrating to a Secure One
 - [Challenge 3](./CHALLENGE_3.md): Leveraging `strict-dynamic` for Modern Script Management
 - [Challenge 4](./CHALLENGE_4.md): Retrofitting **Trusted Types** for DOM-Based XSS
