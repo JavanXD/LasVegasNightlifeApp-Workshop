@@ -1,0 +1,4 @@
+{
+  "startCommand": "cd src && npm install && npm start",
+  "installCommand": "cd src && npm install"
+}

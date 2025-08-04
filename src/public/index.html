@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Las Vegas Nightlife App - VIP Guest List</title>
+    <link href="./assets/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <style>
+        .btn-primary {
+            background-color: #1B4D3E !important;
+            border-color: #1B4D3E !important;
+        }
+        .btn-primary:hover {
+            background-color: #0F2E24 !important;
+            border-color: #0F2E24 !important;
+        }
+        .card-header {
+            background-color: #1B4D3E !important;
+            color: white !important;
+        }
+        .text-primary {
+            color: #1B4D3E !important;
+        }
+        .btn-primary:focus {
+            background-color: #1B4D3E !important;
+            border-color: #1B4D3E !important;
+            box-shadow: 0 0 0 0.2rem rgba(27, 77, 62, 0.25) !important;
+        }
+        .form-control:focus {
+            border-color: #1B4D3E !important;
+            box-shadow: 0 0 0 0.2rem rgba(27, 77, 62, 0.25) !important;
+        }
+        .form-select:focus {
+            border-color: #1B4D3E !important;
+            box-shadow: 0 0 0 0.2rem rgba(27, 77, 62, 0.25) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center text-primary">🎰 Las Vegas Nightlife App</h1>
+        <p class="text-muted text-center">High Stakes Guest List – Las Vegas Edition</p>
+
+        <!-- VIP Guest List Form -->
+        <div class="card mb-4">
+            <div class="card-header">🎟️ Join the VIP Guest List</div>
+            <div class="card-body">
+                <form id="orderForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Your Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="Enter your name" value="John Doe" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="order" class="form-label">🎲 Event/Game Selection</label>
+                        <select id="order" class="form-select">
+                            <option value="High Rollers Poker">High Rollers Poker</option>
+                            <option value="Roulette Royale">Roulette Royale</option>
+                            <option value="Blackjack Elite">Blackjack Elite</option>
+                            <option value="Craps Championship">Craps Championship</option>
+                            <option value="Slot Machine Showdown">Slot Machine Showdown</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">🎟️ Join the Table</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- VIP Guest List (Persistent XSS Vulnerability) -->
+        <div class="card mb-4">
+            <div class="card-header">📃 Public Waiting List / Leaderboard</div>
+            <div class="card-body">
+                <ul id="ordersList" class="list-group">
+                    <li class="list-group-item text-muted">No guests on the list yet</li>
+                </ul>
+            </div>
+
+            <!-- Clear Guest List Button -->
+            <div class="mb-4 text-center">
+                <button id="clearOrdersButton" class="btn btn-danger">Clear All Guests</button>
+            </div>
+        </div>
+
+        <!-- Search Section (DOM-based XSS Vulnerability) -->
+        <div class="card mb-4">
+            <div class="card-header">🔍 Search VIP Guests</div>
+            <div class="card-body">
+                <form id="searchForm">
+                    <div class="mb-3">
+                        <label for="search" class="form-label">Search by Name</label>
+                        <input type="text" id="search" class="form-control" placeholder="Enter guest name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <div id="searchResults" class="mt-3"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Guest submission (Persistent XSS)
+        document.getElementById('orderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const order = document.getElementById('order').value;
+
+            try {
+                const response = await fetch('/api/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, order }),
+                });
+
+                const data = await response.json();
+                alert(data.message);
+                fetchOrders(); // Update guest list
+            } catch (err) {
+                alert('Reservation failed: ' + err.message);
+            }
+        });
+
+        // Fetch and display guest list
+        async function fetchOrders() {
+            const ordersList = document.getElementById('ordersList');
+            ordersList.innerHTML = '';
+            const response = await fetch('/api/orders');
+            const orders = await response.json();
+
+            orders.forEach(order => {
+                // Persistent XSS vulnerability: unsanitised data rendered with innerHTML
+                ordersList.innerHTML += `<li class="list-group-item">${order.name} reserved for ${order.order}</li>`;
+            });
+        }
+
+        // Search guests (DOM-based XSS)
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const searchQuery = document.getElementById('search').value;
+            const searchResults = document.getElementById('searchResults');
+
+            try {
+                const response = await fetch('/api/orders');
+                const orders = await response.json();
+
+                let html = `<p>Search results for: <b>${searchQuery}</b></p>`;
+                const filteredOrders = orders.filter(order => 
+                    order.name.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+
+                if (filteredOrders.length > 0) {
+                    html += '<ul class="list-group">';
+                    filteredOrders.forEach(order => {
+                        html += `<li class="list-group-item">${order.name} reserved for ${order.order}</li>`;
+                    });
+                    html += '</ul>';
+                } else {
+                    html += `<p>No results found for: <b>${searchQuery}</b></p>`;
+                }
+
+                // DOM-based XSS: unsanitised input rendered with innerHTML
+                searchResults.innerHTML = html;
+            } catch (err) {
+                searchResults.innerHTML = `<p class="text-danger">Failed to search guests: ${err.message}</p>`;
+            }
+        });
+
+        // Clear all guests
+        document.getElementById('clearOrdersButton').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/clear-orders');
+                const data = await response.json();
+                alert(data.message); // Show success message
+                fetchOrders(); // Refresh the guest list
+            } catch (err) {
+                alert('Failed to clear guest list: ' + err.message);
+            }
+        });
+
+        // Fetch guest list on page load
+        fetchOrders();
+    </script>
+</body>
+</html>

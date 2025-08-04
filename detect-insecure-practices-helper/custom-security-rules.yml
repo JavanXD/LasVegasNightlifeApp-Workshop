@@ -1,0 +1,57 @@
+rules:
+- id: detect-eval
+  languages: [javascript]
+  patterns:
+    - pattern: eval(...)
+  message: Avoid using eval as it can lead to security vulnerabilities. Consider refactoring to safer alternatives.
+  severity: WARNING
+
+- id: detect-innerHTML
+  languages: [javascript]
+  patterns:
+    - pattern: ...innerHTML
+  message: Avoid directly assigning to innerHTML to prevent XSS. Use a safer method or Trusted Types.
+  severity: WARNING
+
+- id: detect-document-write
+  languages: [javascript]
+  patterns:
+    - pattern: document.write(...)
+  message: Avoid using document.write as it can lead to DOM-based XSS. Consider removing or replacing with safer alternatives.
+  severity: WARNING
+
+- id: detect-setattribute
+  languages: [javascript]
+  patterns:
+    - pattern: element.setAttribute(..., ...)
+  message: Avoid using setAttribute to set event handlers or URLs. Use Trusted Types or other safer APIs.
+  severity: WARNING
+
+- id: detect-unsafe-url-creation
+  languages: [javascript]
+  patterns:
+    - pattern: URL.createObjectURL(...)
+  message: Be cautious with URL.createObjectURL as it can lead to security issues. Use Trusted Types to manage safe usage.
+  severity: WARNING
+
+- id: detect-unsafe-script-injection
+  languages: [javascript]
+  patterns:
+    - pattern: new Function(...)
+  message: Avoid using Function constructors as they are equivalent to eval. Consider safer alternatives.
+  severity: WARNING
+
+- id: detect-unsafe-attribute-setting
+  languages: [javascript]
+  patterns:
+    - pattern: element.setAttribute("src", ...)
+    - pattern: element.setAttribute("href", ...)
+  message: Avoid dynamically setting "src" or "href" attributes directly. Use safe URL builders or Trusted Types.
+  severity: WARNING
+
+- id: detect-unsafe-template-literals
+  languages: [javascript]
+  patterns:
+    - pattern: "`...${...}...`"
+  message: Be cautious when injecting variables into template literals that manipulate the DOM. Use Trusted Types or escape user input.
+  severity: WARNING

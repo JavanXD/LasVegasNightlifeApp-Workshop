@@ -1,0 +1,10 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="32" height="32" rx="4" fill="#1B4D3E"/>
+<rect x="4" y="4" width="24" height="24" rx="2" fill="#FFD700" stroke="#1B4D3E" stroke-width="1"/>
+<!-- Dice dots -->
+<circle cx="10" cy="10" r="2" fill="#1B4D3E"/>
+<circle cx="22" cy="10" r="2" fill="#1B4D3E"/>
+<circle cx="16" cy="16" r="2" fill="#1B4D3E"/>
+<circle cx="10" cy="22" r="2" fill="#1B4D3E"/>
+<circle cx="22" cy="22" r="2" fill="#1B4D3E"/>
+</svg> 

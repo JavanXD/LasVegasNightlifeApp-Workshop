@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  las-vegas-nightlife-app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      # Map the app.js file and public folder to enable live updates
+      - ./app.js:/usr/src/app/app.js
+      - ./public:/usr/src/app/public
+      # Ensure node_modules inside the container is used
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development

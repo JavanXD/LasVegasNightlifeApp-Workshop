@@ -1,0 +1,32 @@
+{
+  "name": "las-vegas-nightlife-app",
+  "version": "1.0.0",
+  "description": "High Stakes Guest List – Las Vegas Edition - A casino-themed security workshop for learning modern web security practices.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "web-security",
+    "sec-fetch",
+    "csrf",
+    "csp",
+    "trusted-types",
+    "las-vegas",
+    "nightlife",
+    "vip",
+    "casino"
+  ],
+  "author": "Javan Rasokat",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "helmet": "^6.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

