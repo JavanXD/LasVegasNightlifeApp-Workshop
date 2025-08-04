@@ -1,7 +1,10 @@
 #!/bin/bash
+# Script for Challenge 4
+# This script scans for insecure JavaScript practices in the app's source code.
 
 # Set the paths to your app's source code
 SOURCE_DIR="../src/public"
+extracted_scripts_from_index=$SOURCE_DIR/../../extracted_scripts_from_index.js
 
 # Define patterns for insecure JavaScript practices
 patterns=(
@@ -26,10 +29,10 @@ if command -v semgrep &> /dev/null; then
   # Extract <script> sections into a temp file for Semgrep to scan
   if [ -f "$SOURCE_DIR/index.html" ]; then
     echo "Extracting JavaScript content from <script> tags in index.html..."
-    awk '/<script>/,/<\/script>/ {if (!/<script>/ && !/<\/script>/) print}' "$SOURCE_DIR/index.html" > "$SOURCE_DIR/index-script.js"
+    awk '/<script>/,/<\/script>/ {if (!/<script>/ && !/<\/script>/) print}' "$SOURCE_DIR/index.html" > "$extracted_scripts_from_index"
 
-    if [ -s "$SOURCE_DIR/index-script.js" ]; then
-      echo "JavaScript content extracted to $SOURCE_DIR/index-script.js for analysis."
+    if [ -s "$extracted_scripts_from_index" ]; then
+      echo "JavaScript content extracted to $extracted_scripts_from_index for analysis."
     else
       echo "No JavaScript content found in <script> tags."
     fi
@@ -38,9 +41,9 @@ if command -v semgrep &> /dev/null; then
   fi
 
   # Run Semgrep on the extracted file or JavaScript files
-  if [ -s "$SOURCE_DIR/index-script.js" ]; then
+  if [ -s "$extracted_scripts_from_index" ]; then
     echo -e "\nRunning Semgrep on extracted scripts..."
-    semgrep --config ./custom-security-rules.yml "$SOURCE_DIR/index-script.js"
+    semgrep --config ./custom-security-rules.yml "$extracted_scripts_from_index"
   else
     echo -e "\nNo JavaScript content to analyze. Skipping Semgrep step."
   fi
