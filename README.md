@@ -76,7 +76,8 @@
 - [`CHALLENGES.md`](./CHALLENGES.md): Contains the activities for the workshop.
 - `src/`: Contains the code for the Las Vegas Nightlife application.
     - `src/public/`: Contains the static front-end assets.
-    - `src/app.js`: Contains the back-end code.
+    - `src/app.js`: Contains the back-end code (here all the changes happen).
+    - `src/csp-reporting.js`: Endpoint to receive CSP reports and visualise them. 
 - `attacks/`: Contains the attack scripts for the challenges.
 - [`detect-insecure-practices-helper/`](./detect-insecure-practices-helper/README.md): Contains the helper script to detect insecure practices using `grep` and a custom **Semgrep** rule. (used for [Challenge 4](./CHALLENGE_4.md))
 
