@@ -1,7 +1,7 @@
 # Challenge 6: CSP Violation Reporting and Monitoring
 
 ## Objective
-Implement CSP violation reporting using both `report-uri` and `report-to` directives to capture and monitor XSS attempts and other policy violations.
+Implement CSP violation reporting using `report-uri` directive to capture and monitor XSS attempts and other policy violations.
 
 ## Background
 Content Security Policy (CSP) reporting allows you to monitor violations in real-time. This helps detect:
@@ -32,9 +32,8 @@ app.use((req, res, next) => {
         "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;",
         "connect-src 'self';",
         "img-src 'self' data:;",
-        // Add these reporting directives:
-        "report-uri /csp-report;",
-        "report-to csp-endpoint;"
+        // Add the reporting directive (report-uri works on http://, in future it will become deprecated and replaced by report-to):
+        "report-uri /csp-report;"
     ].join(' ')); 
     
     next();
@@ -132,7 +131,7 @@ const isBrowserExtension = (blockedURI) => {
 
 ## Testing Your Implementation
 
-1. After adding the `report-to` directive to your CSP and making the changes in the code, restart the application: `npm start`
+1. After adding the `report-uri` directive to your CSP and making the changes in the code, restart the application: `npm start`
 2. Visit the main app: `http://localhost:3000`
 3. Visit the CSP dashboard: `http://localhost:3000/csp-dashboard`
 4. Trigger violations (e.g. using the XSS payload from previous challenges)
